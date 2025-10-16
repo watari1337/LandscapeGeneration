@@ -7,6 +7,10 @@ PaintWorld::PaintWorld(QWidget *parent)
     curPixmap.fill(sky);
     makeGround();
     world = World();
+    setFocusPolicy(Qt::StrongFocus);
+    QTimer *timer = new QTimer(this);
+    connect(timer, &QTimer::timeout, this, &PaintWorld::updateFrame);
+    timer->start(16);
 }
 
 void PaintWorld::resizeEvent(QResizeEvent *event)
@@ -52,11 +56,48 @@ void PaintWorld::paintEvent(QPaintEvent *event)
         int globalY = item->chunkY() * Chunk::CHUNKSIZE - cam.top();
         QVector line = item->getGroundLine();
         for(int i = 0; i < line.size(); i++){
-            /*paint.setPen(QPen(sky, 1));
-            paint.drawLine(globalX, globalY, globalX, line[i]);*/
             int globalGroundY = line[i] - cam.top();
             paint.drawLine(globalX + i, globalGroundY, globalX + i, globalY + Chunk::CHUNKSIZE);
         }
+    }
+}
+
+void PaintWorld::keyPressEvent(QKeyEvent *event)
+{
+    if(event->isAutoRepeat()) return;
+
+    if (event->key() == Qt::Key_W) {moveUp = true; moveDown = false; moveY = -moveStart;}
+    if (event->key() == Qt::Key_A) {moveLeft = true; moveRight = false; moveX = -moveStart;}
+    if (event->key() == Qt::Key_S) {moveDown = true; moveUp = false; moveY = moveStart;}
+    if (event->key() == Qt::Key_D) {moveRight = true; moveLeft = false; moveX = moveStart;}
+}
+
+void PaintWorld::keyReleaseEvent(QKeyEvent *event)
+{
+    if (event->isAutoRepeat()) return;
+
+    if (event->key() == Qt::Key_W) {moveUp = false;}
+    if (event->key() == Qt::Key_A) {moveLeft = false;}
+    if (event->key() == Qt::Key_S) {moveDown = false;}
+    if (event->key() == Qt::Key_D) {moveRight = false;}
+}
+
+void PaintWorld::updateFrame()
+{
+    if (!moveUp && !moveDown) moveY = 0;
+    if (!moveLeft && !moveRight) moveX = 0;
+
+    if (moveUp && abs(moveY) < 30) {moveY *= baseMoveInc;}
+    if (moveDown && abs(moveY) < 30) {moveY *= baseMoveInc;}
+    if (moveLeft && abs(moveX) < 30) {moveX *= baseMoveInc;}
+    if (moveRight && abs(moveX) < 30) {moveX *= baseMoveInc;}
+
+    if (moveY != 0 || moveX != 0) {
+        cam.move(moveX, moveY);
+        qDebug() << moveX << moveY;
+        QPoint point = world.getCameraChunk(cam);
+        world.CheckChunks(point.x(), point.y());
+        update();
     }
 }
 
@@ -84,3 +125,5 @@ void PaintWorld::makeGround()
         paint.drawLine(i, line[i], i, curPixmap.height());
     }
 }
+
+

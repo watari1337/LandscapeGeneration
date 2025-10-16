@@ -39,4 +39,12 @@ QList<std::shared_ptr<Chunk> > World::getCameraChunks(Camera camera)
     return ans;
 }
 
+QPoint World::getCameraChunk(Camera camera)
+{
+    QPoint point;
+    point.setX(std::floor(camera.left() / Chunk::CHUNKSIZE));
+    point.setY(std::floor(camera.top() / Chunk::CHUNKSIZE));
+    return point;
+}
+
 
