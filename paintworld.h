@@ -1,6 +1,7 @@
 #ifndef PAINTWORLD_H
 #define PAINTWORLD_H
 
+#include "global.h"
 #include "world.h"
 #include <QWidget>
 #include <QPainter>

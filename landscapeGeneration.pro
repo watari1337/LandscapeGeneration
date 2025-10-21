@@ -19,6 +19,7 @@ SOURCES += \
 HEADERS += \
     camera.h \
     chunk.h \
+    global.h \
     mainwindow.h \
     paintworld.h \
     world.h

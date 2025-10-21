@@ -1,4 +1,7 @@
 #include "paintworld.h"
+#include "global.h"
+
+int SEED = 78456120;
 
 PaintWorld::PaintWorld(QWidget *parent)
     : QWidget{parent}, cam(0, 0, this->width(), this->height())
@@ -11,6 +14,7 @@ PaintWorld::PaintWorld(QWidget *parent)
     QTimer *timer = new QTimer(this);
     connect(timer, &QTimer::timeout, this, &PaintWorld::updateFrame);
     timer->start(16);
+    SEED = 78456120;
 }
 
 void PaintWorld::resizeEvent(QResizeEvent *event)
@@ -57,7 +61,11 @@ void PaintWorld::paintEvent(QPaintEvent *event)
         QVector line = item->getGroundLine();
         for(int i = 0; i < line.size(); i++){
             int globalGroundY = line[i] - cam.top();
-            paint.drawLine(globalX + i, globalGroundY, globalX + i, globalY + Chunk::CHUNKSIZE);
+            if (line[i] >= 0 && line[i] < Chunk::CHUNKSIZE){
+                paint.drawLine(globalX + i, globalY + line[i], globalX + i, globalY + Chunk::CHUNKSIZE);
+            } else if (line[i] < 0){
+                paint.drawLine(globalX + i, globalY, globalX + i, globalY + Chunk::CHUNKSIZE);
+            }
         }
     }
 }
@@ -94,7 +102,7 @@ void PaintWorld::updateFrame()
 
     if (moveY != 0 || moveX != 0) {
         cam.move(moveX, moveY);
-        qDebug() << moveX << moveY;
+        //qDebug() << moveX << moveY;
         QPoint point = world.getCameraChunk(cam);
         world.CheckChunks(point.x(), point.y());
         update();
