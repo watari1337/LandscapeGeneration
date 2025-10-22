@@ -7,6 +7,7 @@ public:
     Camera(float x, float y, float width, float heigh);
 
     void move(float dx, float dy);
+    void moveTo(float x, float y);
     void reSize(float width, float height);
 
     float top() const;

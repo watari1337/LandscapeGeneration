@@ -12,6 +12,12 @@ void Camera::move(float dx, float dy)
     m_y += dy;
 }
 
+void Camera::moveTo(float x, float y)
+{
+    m_x = x;
+    m_y = y;
+}
+
 void Camera::reSize(float width, float height)
 {
     m_width = width;

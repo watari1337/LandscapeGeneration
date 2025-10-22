@@ -26,7 +26,6 @@ protected:
     void keyReleaseEvent(QKeyEvent *event) override;
 
 private:
-    QColor grass = QColor(50, 201, 65), sky = QColor(111, 183, 209);
     QPixmap curPixmap;
     QVector<int> groundHeight;
     QVector<int> makeGroundLine(int length);

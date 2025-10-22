@@ -7,7 +7,6 @@ PaintWorld::PaintWorld(QWidget *parent)
     : QWidget{parent}, cam(0, 0, this->width(), this->height())
 {
     curPixmap = QPixmap(800, 600);;
-    curPixmap.fill(sky);
     makeGround();
     world = World();
     setFocusPolicy(Qt::StrongFocus);
@@ -52,21 +51,22 @@ void PaintWorld::paintEvent(QPaintEvent *event)
     paint.drawPixmap(0, 0, curPixmap);*/
 
     //рисуем Chunks
-    paint.fillRect(rect(), sky);
+    //paint.fillRect(rect(), sky);
     QList allChunks = world.getCameraChunks(cam);
-    paint.setPen(QPen(grass, 1));
+    //paint.setPen(QPen(grass, 1));
     for(auto item: allChunks){
         int globalX = item->chunkX() * Chunk::CHUNKSIZE - cam.left();
         int globalY = item->chunkY() * Chunk::CHUNKSIZE - cam.top();
-        QVector line = item->getGroundLine();
-        for(int i = 0; i < line.size(); i++){
+        //QVector line = item->getGroundLine();
+        /*for(int i = 0; i < line.size(); i++){
             int globalGroundY = line[i] - cam.top();
             if (line[i] >= 0 && line[i] < Chunk::CHUNKSIZE){
                 paint.drawLine(globalX + i, globalY + line[i], globalX + i, globalY + Chunk::CHUNKSIZE);
             } else if (line[i] < 0){
                 paint.drawLine(globalX + i, globalY, globalX + i, globalY + Chunk::CHUNKSIZE);
             }
-        }
+        }*/
+        paint.drawPixmap(globalX, globalY, *(item->getPixmap()));
     }
 }
 
@@ -100,7 +100,18 @@ void PaintWorld::updateFrame()
     if (moveLeft && abs(moveX) < 30) {moveX *= baseMoveInc;}
     if (moveRight && abs(moveX) < 30) {moveX *= baseMoveInc;}
 
-    if (moveY != 0 || moveX != 0) {
+    if (moveY != 0 || moveX != 0){
+        if (cam.left() + moveX < (Chunk::LEFTCHUNKBORDER * Chunk::CHUNKSIZE)){
+            moveX = Chunk::LEFTCHUNKBORDER * Chunk::CHUNKSIZE - cam.left();
+        } else if (cam.right() + moveX > (Chunk::RIGHTCHUNKBORDER * Chunk::CHUNKSIZE)) {
+            moveX = Chunk::RIGHTCHUNKBORDER * Chunk::CHUNKSIZE - cam.right();
+        }
+
+        if (cam.top() + moveY < (Chunk::TOPCHUNKBORDER * Chunk::CHUNKSIZE)){
+            moveY = Chunk::TOPCHUNKBORDER * Chunk::CHUNKSIZE - cam.top();
+        } else if (cam.bottom() + moveY > (Chunk::BOTTOMCHUNKBORDER * Chunk::CHUNKSIZE)) {
+            moveY = Chunk::BOTTOMCHUNKBORDER * Chunk::CHUNKSIZE - cam.bottom();
+        }
         cam.move(moveX, moveY);
         //qDebug() << moveX << moveY;
         QPoint point = world.getCameraChunk(cam);
@@ -126,12 +137,12 @@ QVector<int> PaintWorld::makeGroundLine(int length)
 
 void PaintWorld::makeGround()
 {
-    QVector<int> line = makeGroundLine(this->width());
+    /*QVector<int> line = makeGroundLine(this->width());
     QPainter paint(&curPixmap);
     paint.setPen(QPen(grass, 1));
     for(int i = 0; i < line.size(); i++){
         paint.drawLine(i, line[i], i, curPixmap.height());
-    }
+    }*/
 }
 
 
