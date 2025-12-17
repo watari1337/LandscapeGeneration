@@ -14,6 +14,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     paintworld.cpp \
+    settingdialog.cpp \
     world.cpp
 
 HEADERS += \
@@ -22,10 +23,12 @@ HEADERS += \
     global.h \
     mainwindow.h \
     paintworld.h \
+    settingdialog.h \
     world.h
 
 FORMS += \
-    mainwindow.ui
+    mainwindow.ui \
+    settingdialog.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

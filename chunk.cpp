@@ -1,6 +1,62 @@
 #include "chunk.h"
 #include "global.h"
 
+using C = Chunk;
+
+const int C::CMAXVECTORHASH    = 128;
+const int C::CCHUNKSIZE        = 128;
+const int C::CVECTORCELLSIZE   = 50;
+const int C::CVECTORCELLSIZE2D = 200;
+const int C::CVECTORFORGET     = 100;
+
+const int C::CTOPCHUNKBORDER    = -40;
+const int C::CBOTTOMCHUNKBORDER = 40;
+const int C::CLEFTCHUNKBORDER   = -150;
+const int C::CRIGHTCHUNKBORDER  = 150;
+const int C::CWIDTHBORDER       = 10;
+
+const int C::CLANDSTART     = 500;
+const int C::CLANDDEVIATION = 300;
+const int C::CSTONESTART    = 400;
+const int C::CSTONEPOS      = CLANDSTART + CSTONESTART;
+
+int C::MAXVECTORHASH;
+int C::CHUNKSIZE;
+int C::VECTORCELLSIZE;
+int C::VECTORCELLSIZE2D;
+int C::VECTORFORGET;
+
+int C::TOPCHUNKBORDER;
+int C::BOTTOMCHUNKBORDER;
+int C::LEFTCHUNKBORDER;
+int C::RIGHTCHUNKBORDER;
+int C::WIDTHBORDER;
+
+int C::LANDSTART;
+int C::LANDDEVIATION;
+int C::STONESTART;
+int C::STONEPOS;
+
+void Chunk::resetToConstants()
+{
+    MAXVECTORHASH    = CMAXVECTORHASH;
+    CHUNKSIZE        = CCHUNKSIZE;
+    VECTORCELLSIZE   = CVECTORCELLSIZE;
+    VECTORCELLSIZE2D = CVECTORCELLSIZE2D;
+    VECTORFORGET     = CVECTORFORGET;
+
+    TOPCHUNKBORDER    = CTOPCHUNKBORDER;
+    BOTTOMCHUNKBORDER = CBOTTOMCHUNKBORDER;
+    LEFTCHUNKBORDER   = CLEFTCHUNKBORDER;
+    RIGHTCHUNKBORDER  = CRIGHTCHUNKBORDER;
+    WIDTHBORDER       = CWIDTHBORDER;
+
+    LANDSTART     = CLANDSTART;
+    LANDDEVIATION = CLANDDEVIATION;
+    STONESTART    = CSTONESTART;
+    STONEPOS      = CSTONEPOS;
+}
+
 Chunk::Chunk(int chunkX, int chunkY)
 {
     m_chunkX = chunkX;
@@ -33,17 +89,20 @@ void Chunk::generate()
     }
     //cave
     QPen stPen;
-    stPen.setWidth(0);
+    stPen.setWidth(3);
     stPen.setColor(m_caveAir);
     paint.setPen(stPen);
-    for (int i = 0; i < CHUNKSIZE; ++i) {
+    int pointWidth = 3;
+    int pointHeight = 3;
+    for (int i = 0; i < CHUNKSIZE; i+=pointWidth) {
         int globalX = m_chunkX * CHUNKSIZE + i;
-        for (int j = 0; j < CHUNKSIZE; ++j) {
+        for (int j = 0; j < CHUNKSIZE; j+=pointHeight) {
             int globalY = m_chunkY * CHUNKSIZE + j;
             if (STONEPOS < globalY){
                 float z = noisePerlin2D(globalX, globalY);
                 if (z > 0.1f){
-                    paint.drawPoint(i, j);
+                    //paint.drawPoint(i, j);
+                    paint.drawRect(i, j, pointWidth, pointHeight);
                 }
             }
         }
@@ -110,9 +169,13 @@ float Chunk::getHashAngle(int x, int y)
 
 QVector2D Chunk::getPerlinVector2D(int x, int y)
 {
+    QPoint point = QPoint(x, y);
+    if (m_loadVectors.contains(point)) return m_loadVectors[point];
     float angle = getHashAngle(x, y);
     angle *= 2.0f * M_PI;
-    return QVector2D(cos(angle), sin(angle));
+    QVector2D newVector = QVector2D(cos(angle), sin(angle));
+    m_loadVectors.insert(point, newVector);
+    return newVector;
 }
 
 float Chunk::noisePerlin2D(int globalX, int globalY)

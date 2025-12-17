@@ -18,7 +18,7 @@ public:
     //чанк где находится камера
     QPoint getCameraChunk(Camera camera);
 private:
-    static const int UNLOADZONE = 16;
+    static const int UNLOADZONE = 128;
     // если от чанка в центре камеры растояние до чанка больше 16 чанков то выгружаем. сейчас удаляем
     QHash<QPoint, std::shared_ptr<Chunk>> m_loadChunks;
 };

@@ -14,6 +14,7 @@ PaintWorld::PaintWorld(QWidget *parent)
     connect(timer, &QTimer::timeout, this, &PaintWorld::updateFrame);
     timer->start(16);
     SEED = 78456120;
+    Chunk::resetToConstants();
 }
 
 void PaintWorld::resizeEvent(QResizeEvent *event)

@@ -17,6 +17,11 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+private slots:
+    void on_btnSetting_clicked();
+
+    void on_SettingList_currentRowChanged(int currentRow);
+
 private:
     Ui::MainWindow *ui;
 };

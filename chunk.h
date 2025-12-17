@@ -8,6 +8,8 @@
 #include <QPen>
 #include <QColor>
 #include <QVector2D>
+#include <QHash>
+#include <QPoint>
 
 class Chunk
 {
@@ -20,6 +22,46 @@ public:
     QPixmap *getPixmap();
     QVector<int> getGroundLine() const;
 
+    static int MAXVECTORHASH;     // на сколько далеко в хэше вектора может находится 1 вектор
+    static int CHUNKSIZE;         // width and height of chunk
+    static int VECTORCELLSIZE;    // size of vector line
+    static int VECTORCELLSIZE2D;  // size of vector matrix
+    static int VECTORFORGET;      // If we are farther than this num of vector forgot it
+
+    static int TOPCHUNKBORDER;    // через сколько чанков top будет граница
+    static int BOTTOMCHUNKBORDER; // через сколько чанков bottom будет граница
+    static int LEFTCHUNKBORDER;   // через сколько чанков left будет граница
+    static int RIGHTCHUNKBORDER;  // через сколько чанков right будет граница
+    static int WIDTHBORDER;       // через сколько чанков right будет граница
+
+    static int LANDSTART;         // через сколько start medium line of land
+    static int LANDDEVIATION;     // maximum deviation of land line
+    static int STONESTART;        // через сколько after medium land line start line of stone
+    static int STONEPOS;          // через сколько after medium land line start line of stone
+
+    // ===== константные значения =====
+
+    static const int CMAXVECTORHASH;     // на сколько далеко в хэше вектора может находится 1 вектор
+    static const int CCHUNKSIZE;         // width and height of chunk
+    static const int CVECTORCELLSIZE;    // size of vector line
+    static const int CVECTORCELLSIZE2D;  // size of vector matrix
+    static const int CVECTORFORGET;      // If we are farther than this num of vector forgot it
+
+    static const int CTOPCHUNKBORDER;    // через сколько чанков top будет граница
+    static const int CBOTTOMCHUNKBORDER; // через сколько чанков bottom будет граница
+    static const int CLEFTCHUNKBORDER;   // через сколько чанков left будет граница
+    static const int CRIGHTCHUNKBORDER;  // через сколько чанков right будет граница
+    static const int CWIDTHBORDER;       // через сколько чанков right будет граница
+
+    static const int CLANDSTART;          // через сколько start medium line of land
+    static const int CLANDDEVIATION;      // maximum deviation of land line
+    static const int CSTONESTART;         // через сколько after medium land line start line of stone
+    static const int CSTONEPOS;           // через сколько after medium land line start line of stone
+
+    // сброс всех значений к константам
+    static void resetToConstants();
+
+    /*static const int MAXVECTORHASH = 128; //на сколько далеко в хэше вектора может находится 1 вектор
     static const int CHUNKSIZE = 128; //width and heigh of chunk
     static const int VECTORCELLSIZE = 50; //size of vector line
     static const int VECTORCELLSIZE2D = 200; //size of vector matrix
@@ -32,7 +74,7 @@ public:
     static const int LANDSTART = 500; //через сколько start medium line of land
     static const int LANDDEVIATION = 300; //maximum deviation of land line
     static const int STONESTART = 400; //через сколько after medium land line start line of stone
-    static const int STONEPOS = LANDSTART + STONESTART; //через сколько after medium land line start line of stone
+    static const int STONEPOS = LANDSTART + STONESTART; //через сколько after medium land line start line of stone*/
 
 private:
 
@@ -47,6 +89,7 @@ private:
     float getHashAngle(int x, int y);
     QVector2D getPerlinVector2D(int x, int y);
     float noisePerlin2D(int globalX, int globalY); //значение по z от 0 до 1
+    QHash<QPoint, QVector2D> m_loadVectors;
 };
 
 #endif // CHUNK_H
