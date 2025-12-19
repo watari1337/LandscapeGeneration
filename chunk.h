@@ -36,6 +36,8 @@ public:
 
     static int LANDSTART;         // через сколько start medium line of land
     static int LANDDEVIATION;     // maximum deviation of land line
+    static int LANDSCALE;
+    static float STONESCALE;
     static int STONESTART;        // через сколько after medium land line start line of stone
     static int STONEPOS;          // через сколько after medium land line start line of stone
 
@@ -55,11 +57,14 @@ public:
 
     static const int CLANDSTART;          // через сколько start medium line of land
     static const int CLANDDEVIATION;      // maximum deviation of land line
+    static const int CLANDSCALE;
+    static const float CSTONESCALE;
     static const int CSTONESTART;         // через сколько after medium land line start line of stone
     static const int CSTONEPOS;           // через сколько after medium land line start line of stone
 
     // сброс всех значений к константам
     static void resetToConstants();
+    static void clearVectorHash();
 
     /*static const int MAXVECTORHASH = 128; //на сколько далеко в хэше вектора может находится 1 вектор
     static const int CHUNKSIZE = 128; //width and heigh of chunk
@@ -89,7 +94,7 @@ private:
     float getHashAngle(int x, int y);
     QVector2D getPerlinVector2D(int x, int y);
     float noisePerlin2D(int globalX, int globalY); //значение по z от 0 до 1
-    QHash<QPoint, QVector2D> m_loadVectors;
+    static QHash<QPoint, QVector2D> m_loadVectors;
 };
 
 #endif // CHUNK_H

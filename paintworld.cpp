@@ -2,6 +2,7 @@
 #include "global.h"
 
 int SEED = 78456120;
+int MAXSPEED = 30;
 
 PaintWorld::PaintWorld(QWidget *parent)
     : QWidget{parent}, cam(0, 0, this->width(), this->height())
@@ -96,10 +97,10 @@ void PaintWorld::updateFrame()
     if (!moveUp && !moveDown) moveY = 0;
     if (!moveLeft && !moveRight) moveX = 0;
 
-    if (moveUp && abs(moveY) < 30) {moveY *= baseMoveInc;}
-    if (moveDown && abs(moveY) < 30) {moveY *= baseMoveInc;}
-    if (moveLeft && abs(moveX) < 30) {moveX *= baseMoveInc;}
-    if (moveRight && abs(moveX) < 30) {moveX *= baseMoveInc;}
+    if (moveUp && abs(moveY) < MAXSPEED) {moveY *= baseMoveInc;}
+    if (moveDown && abs(moveY) < MAXSPEED) {moveY *= baseMoveInc;}
+    if (moveLeft && abs(moveX) < MAXSPEED) {moveX *= baseMoveInc;}
+    if (moveRight && abs(moveX) < MAXSPEED) {moveX *= baseMoveInc;}
 
     if (moveY != 0 || moveX != 0){
         if (cam.left() + moveX < (Chunk::LEFTCHUNKBORDER * Chunk::CHUNKSIZE)){

@@ -17,6 +17,7 @@ public:
     QList<std::shared_ptr<Chunk>> getCameraChunks(Camera camera);
     //чанк где находится камера
     QPoint getCameraChunk(Camera camera);
+    void clearWorldCashData();
 private:
     static const int UNLOADZONE = 128;
     // если от чанка в центре камеры растояние до чанка больше 16 чанков то выгружаем. сейчас удаляем

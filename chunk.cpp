@@ -17,6 +17,8 @@ const int C::CWIDTHBORDER       = 10;
 
 const int C::CLANDSTART     = 500;
 const int C::CLANDDEVIATION = 300;
+const int C::CLANDSCALE     = 9;
+const float C::CSTONESCALE    = 0.1;
 const int C::CSTONESTART    = 400;
 const int C::CSTONEPOS      = CLANDSTART + CSTONESTART;
 
@@ -34,8 +36,12 @@ int C::WIDTHBORDER;
 
 int C::LANDSTART;
 int C::LANDDEVIATION;
+int C::LANDSCALE;
+float C::STONESCALE;
 int C::STONESTART;
 int C::STONEPOS;
+
+QHash<QPoint, QVector2D> C::m_loadVectors;
 
 void Chunk::resetToConstants()
 {
@@ -53,8 +59,15 @@ void Chunk::resetToConstants()
 
     LANDSTART     = CLANDSTART;
     LANDDEVIATION = CLANDDEVIATION;
+    LANDSCALE     = CLANDSCALE;
+    STONESCALE    = CSTONESCALE;
     STONESTART    = CSTONESTART;
     STONEPOS      = CSTONEPOS;
+}
+
+void Chunk::clearVectorHash()
+{
+    m_loadVectors.clear();
 }
 
 Chunk::Chunk(int chunkX, int chunkY)
@@ -74,7 +87,7 @@ void Chunk::generate()
     int globalYBottom = (m_chunkY+1) * CHUNKSIZE;
     int globalX = m_chunkX * CHUNKSIZE;
     for (int i = 0; i < CHUNKSIZE; i++) {
-        int globalLandY = (LANDSTART + LANDDEVIATION * noisePerlin(globalX/9));
+        int globalLandY = (LANDSTART + LANDDEVIATION * noisePerlin(globalX/LANDSCALE));
         int localY = globalLandY - (m_chunkY * CHUNKSIZE);
         m_groundLine[i] = globalLandY;
         //draw ground line
@@ -100,7 +113,7 @@ void Chunk::generate()
             int globalY = m_chunkY * CHUNKSIZE + j;
             if (STONEPOS < globalY){
                 float z = noisePerlin2D(globalX, globalY);
-                if (z > 0.1f){
+                if (z > STONESCALE){
                     //paint.drawPoint(i, j);
                     paint.drawRect(i, j, pointWidth, pointHeight);
                 }

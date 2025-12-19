@@ -1,4 +1,5 @@
 #include "world.h"
+#include "paintworld.h"
 
 World::World() {}
 
@@ -45,6 +46,12 @@ QPoint World::getCameraChunk(Camera camera)
     point.setX(std::floor(camera.left() / Chunk::CHUNKSIZE));
     point.setY(std::floor(camera.top() / Chunk::CHUNKSIZE));
     return point;
+}
+
+void World::clearWorldCashData()
+{
+    Chunk::clearVectorHash();
+    m_loadChunks.clear();
 }
 
 

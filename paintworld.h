@@ -18,6 +18,8 @@ class PaintWorld : public QWidget
     Q_OBJECT
 public:
     explicit PaintWorld(QWidget *parent = nullptr);
+    World world;
+    Camera cam;
 
 protected:
     void resizeEvent(QResizeEvent *event) override;
@@ -31,8 +33,6 @@ private:
     QVector<int> makeGroundLine(int length);
     void makeGround();
     void updateFrame();
-    World world;
-    Camera cam;
     float moveSpeed = 0.5, baseMoveInc = 1.05, moveStart = 5, moveX = 0, moveY = 0;
     bool moveUp = false, moveDown = false, moveLeft = false, moveRight = false;
 signals:
